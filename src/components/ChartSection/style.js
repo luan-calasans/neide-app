@@ -1,0 +1,121 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  section: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  title: {
+    fontSize: 18,
+    fontFamily: 'Montserrat_700Bold',
+    color: '#d81b60',
+    marginBottom: 12,
+  },
+  chartContainer: {
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 8,
+  },
+  chartLabel: {
+    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 14,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  chart: {
+    borderRadius: 8,
+  },
+  topList: {
+    marginTop: 16,
+  },
+  topListTitle: {
+    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  topItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    borderLeftWidth: 4,
+    borderLeftColor: '#d81b60',
+  },
+  rankBadge: {
+    backgroundColor: '#d81b60',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  goldBadge: {
+    backgroundColor: '#FFD700',
+  },
+  silverBadge: {
+    backgroundColor: '#C0C0C0',
+  },
+  bronzeBadge: {
+    backgroundColor: '#CD7F32',
+  },
+  rankText: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    color: '#fff',
+  },
+  topItemContent: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  topItemName: {
+    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 15,
+    color: '#333',
+    marginBottom: 4,
+    lineHeight: 20,
+  },
+  topItemCategory: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  topItemSalesContainer: {
+    alignItems: 'flex-end',
+  },
+  topItemSales: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 18,
+    color: '#d81b60',
+  },
+  topItemSalesLabel: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 11,
+    color: '#888',
+    marginTop: 2,
+  },
+}); 

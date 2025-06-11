@@ -1,0 +1,106 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#d81b60',
+  },
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+    paddingVertical: 40,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: 20,
+  },
+  title: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 28,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 16,
+    color: '#f8bbd0',
+    textAlign: 'center',
+  },
+  form: {
+    width: '100%',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 16,
+  },
+  button: {
+    backgroundColor: '#c2185b',
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  buttonDisabled: {
+    backgroundColor: '#ad1457',
+    opacity: 0.7,
+  },
+  buttonText: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  credentialsHint: {
+    marginTop: 30,
+    padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  credentialsText: {
+    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  credentialsDetail: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 12,
+    color: '#f8bbd0',
+    textAlign: 'center',
+    marginBottom: 2,
+  },
+}); 

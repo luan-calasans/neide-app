@@ -1,11 +1,31 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+const { getDefaultConfig } = require('expo/metro-config');
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
-const config = {};
+const config = getDefaultConfig(__dirname);
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+// Enable Hermes optimizations
+config.transformer = {
+  ...config.transformer,
+  minifierPath: 'metro-minify-terser',
+  minifierConfig: {
+    // Hermes-compatible minification
+    keep_fnames: true,
+    mangle: {
+      keep_fnames: true,
+    },
+  },
+};
+
+// Resolver configuration for better compatibility
+config.resolver = {
+  ...config.resolver,
+  assetExts: [...config.resolver.assetExts, 'cjs'],
+  sourceExts: [...config.resolver.sourceExts, 'cjs'],
+};
+
+// Serializer configuration
+config.serializer = {
+  ...config.serializer,
+  getModulesRunBeforeMainModule: () => [],
+};
+
+module.exports = config;

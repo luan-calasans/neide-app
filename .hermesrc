@@ -1,0 +1,16 @@
+{
+  "optimization": {
+    "level": "O2",
+    "inlining": true,
+    "cse": true,
+    "dce": true
+  },
+  "runtime": {
+    "strictMode": true,
+    "gcType": "incremental"
+  },
+  "debug": {
+    "sourceMap": true,
+    "debugInfo": true
+  }
+} 
