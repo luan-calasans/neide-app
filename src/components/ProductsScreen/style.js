@@ -105,14 +105,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  categoryIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
   categoryText: {
     fontSize: 13,
     fontFamily: 'Montserrat_600SemiBold',
@@ -133,8 +125,13 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
+  row: {
+    justifyContent: 'space-between',
+  },
   productItem: {
+    flex: 1,
     marginBottom: 15,
+    marginHorizontal: 5,
   },
   centerContainer: {
     flex: 1,

@@ -114,24 +114,6 @@ export function ProductCard({ product }) {
             </Text>
           )}
         </View>
-
-        {/* Botão de ação */}
-        <TouchableOpacity 
-          style={[
-            styles.actionButton, 
-            product.stock_quantity === 0 && styles.disabledButton
-          ]}
-          disabled={product.stock_quantity === 0}
-        >
-          <MaterialIcons 
-            name={product.stock_quantity === 0 ? "block" : "shopping-cart"} 
-            size={16} 
-            color="#fff" 
-          />
-          <Text style={styles.actionButtonText}>
-            {product.stock_quantity === 0 ? 'Indisponível' : 'Ver Detalhes'}
-          </Text>
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

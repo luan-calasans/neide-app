@@ -28,16 +28,14 @@ export function ProfileScreen({ onLogout }) {
   };
 
   const openWhatsApp = () => {
-    const phoneNumber = '5513991568631';
-    const message = encodeURIComponent('Olá! Vim através do app Neide Cosméticos.');
-    const url = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+    const url = `https://wa.me/5513991568631`;
     Linking.openURL(url).catch(() => {
       Alert.alert('Erro', 'Não foi possível abrir o WhatsApp');
     });
   };
 
   const openInstagram = () => {
-    const url = 'instagram://user?username=neidecosmeticossantos';
+    const url = 'https://instagram.com/neidecosmeticossantos';
     Linking.openURL(url).catch(() => {
       Linking.openURL('https://instagram.com/neidecosmeticossantos');
     });
@@ -131,8 +129,7 @@ export function ProfileScreen({ onLogout }) {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>App Neide Cosméticos v1.0</Text>
-        <Text style={styles.footerText}>Desenvolvido com ❤️</Text>
+        <Text style={styles.footerText}>Desenvolvido com Luan, Igor e Valeria ❤️</Text>
       </View>
     </ScrollView>
   );

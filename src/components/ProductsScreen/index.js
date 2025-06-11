@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Animated } from 'react-native';
 import { Search, X, AlertCircle, CheckCircle } from 'lucide-react-native';
 import { useProducts } from '../../hooks/useProducts';
@@ -18,6 +18,16 @@ export function ProductsScreen() {
     searchProducts, 
     refetch 
   } = useProducts();
+
+  // Debug do estado
+  useEffect(() => {
+    console.log('🔍 ProductsScreen - Estado atual:', {
+      produtos: products.length,
+      categorias: categories.length,
+      carregando: loading,
+      erro: error
+    });
+  }, [products, categories, loading, error]);
 
   // Filtrar produtos baseado na busca e categoria
   const filteredProducts = searchProducts(searchText, selectedCategory);
@@ -42,18 +52,7 @@ export function ProductsScreen() {
   };
 
   const renderProduct = ({ item, index }) => (
-    <Animated.View
-      style={[
-        styles.productItem,
-        {
-          opacity: scrollY.interpolate({
-            inputRange: [-1, 0, index * 200, (index + 1) * 200],
-            outputRange: [1, 1, 1, 0.3],
-            extrapolate: 'clamp',
-          }),
-        },
-      ]}
-    >
+    <Animated.View style={styles.productItem}>
       <ProductCard product={item} />
     </Animated.View>
   );
@@ -77,10 +76,6 @@ export function ProductsScreen() {
         disabled={loading}
         activeOpacity={0.8}
       >
-        <View style={[
-          styles.categoryIconContainer,
-          { backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(216,27,96,0.1)' }
-        ]} />
         <Text style={[
           styles.categoryText,
           { 
@@ -204,6 +199,9 @@ export function ProductsScreen() {
           data={filteredProducts}
           renderItem={renderProduct}
           keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          key="two-columns"
+          columnWrapperStyle={styles.row}
           style={styles.productList}
           showsVerticalScrollIndicator={false}
           refreshControl={
