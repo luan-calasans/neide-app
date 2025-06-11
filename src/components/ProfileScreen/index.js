@@ -129,7 +129,7 @@ export function ProfileScreen({ onLogout }) {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Desenvolvido com Luan, Igor e Valeria ❤️</Text>
+        <Text style={styles.footerText}>Luan, Igor e Valéria ❤️</Text>
       </View>
     </ScrollView>
   );
