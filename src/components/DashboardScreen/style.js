@@ -55,11 +55,11 @@ export const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    gap: 10,
   },
   statCard: {
-    width: (width - 60) / 2,
-    marginBottom: 15,
+    width: '48%',
+    marginBottom: 10,
     borderRadius: 20,
     elevation: 8,
     shadowColor: '#000',
@@ -68,9 +68,9 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   statGradient: {
-    padding: 20,
+    padding: 15,
     borderRadius: 20,
-    minHeight: 120,
+    minHeight: 90,
     justifyContent: 'space-between',
   },
   statHeader: {
@@ -80,9 +80,10 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   statValue: {
-    fontSize: 32,
+    fontSize: 24,
     fontFamily: 'Montserrat_700Bold',
     color: '#fff',
+    textAlign: 'right',
   },
   statTitle: {
     fontSize: 14,

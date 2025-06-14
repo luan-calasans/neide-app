@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Animated } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Search, X, AlertCircle, CheckCircle } from 'lucide-react-native';
 import { useProducts } from '../../hooks/useProducts';
 import { ProductCard } from '../ProductCard';
 import { styles } from './style';
@@ -93,7 +93,7 @@ export function ProductsScreen() {
         </Text>
         {isSelected && (
           <View style={styles.selectedIndicator}>
-            <MaterialIcons name="check-circle" size={16} color="#fff" />
+            <CheckCircle size={16} color="#fff" />
           </View>
         )}
       </TouchableOpacity>
@@ -113,7 +113,7 @@ export function ProductsScreen() {
     if (error) {
       return (
         <View style={styles.centerContainer}>
-          <MaterialIcons name="error" size={48} color="#d81b60" />
+          <AlertCircle size={48} color="#d81b60" />
           <Text style={styles.errorText}>Erro ao carregar produtos</Text>
           <Text style={styles.errorSubtext}>{error}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={refetch}>
@@ -126,7 +126,7 @@ export function ProductsScreen() {
     if (filteredProducts.length === 0 && searchText) {
       return (
         <View style={styles.centerContainer}>
-          <MaterialIcons name="error" size={48} color="#999" />
+          <AlertCircle size={48} color="#999" />
           <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
           <Text style={styles.emptySubtext}>Tente uma busca diferente</Text>
         </View>
@@ -161,7 +161,7 @@ export function ProductsScreen() {
       {/* Barra de busca moderna */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
-          <MaterialIcons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <Search size={20} color="#999" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar produtos..."
@@ -175,7 +175,7 @@ export function ProductsScreen() {
               onPress={() => setSearchText('')}
               style={styles.clearButton}
             >
-              <MaterialIcons name="close" size={20} color="#999" />
+              <X size={20} color="#999" />
             </TouchableOpacity>
           )}
         </View>

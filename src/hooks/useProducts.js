@@ -6,10 +6,11 @@ export const useProducts = () => {
   const [categories, setCategories] = useState([{ name: 'Todos', count: 0 }]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [retryCount]);
 
   const loadData = async () => {
     console.log('🚀 Carregando dados da loja...');
@@ -19,8 +20,18 @@ export const useProducts = () => {
     try {
       // Buscar produtos
       const produtos = await fetchProducts();
-      setProducts(produtos);
-      console.log('📦 Hook recebeu:', produtos.length, 'produtos');
+      
+      if (produtos.length === 0) {
+        if (retryCount < 3) {
+          console.log(`⚠️ Tentativa ${retryCount + 1} falhou, tentando novamente...`);
+          setRetryCount(prev => prev + 1);
+          return;
+        }
+        setError('Nenhum produto encontrado');
+      } else {
+        setProducts(produtos);
+        setRetryCount(0); // Reset retry count on success
+      }
       
       // Buscar categorias
       let cats = await fetchCategories();
@@ -31,21 +42,20 @@ export const useProducts = () => {
         );
       }
       setCategories(cats);
-      console.log('📂 Hook recebeu:', cats.length, 'categorias');
-      
-      if (produtos.length === 0) {
-        setError('Nenhum produto encontrado');
-      }
       
     } catch (err) {
-      console.error('❌ Erro no hook:', err);
+      console.error('Erro no hook:', err);
+      if (retryCount < 3) {
+        console.log(`⚠️ Tentativa ${retryCount + 1} falhou, tentando novamente...`);
+        setRetryCount(prev => prev + 1);
+        return;
+      }
       setError('Erro ao carregar loja');
       setProducts([]);
       setCategories([{ name: 'Todos', count: 0 }]);
     }
     
     setLoading(false);
-    console.log('⏹️ Carregamento finalizado');
   };
 
   const getSalesData = (period = 'mes') => {
@@ -77,6 +87,9 @@ export const useProducts = () => {
     getSalesData,
     getProductsByCategory,
     searchProducts,
-    refetch: loadData
+    refetch: () => {
+      setRetryCount(0);
+      loadData();
+    }
   };
 }; 

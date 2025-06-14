@@ -4,8 +4,28 @@ const SECRET = 'cs_a5b450222e2b99e5d1f429b4722b4d3fe69ccffe';
 
 import { Buffer } from 'buffer';
 
+// Verificar conexão com a API
+const checkConnection = async () => {
+  try {
+    const response = await fetch(`${API_BASE}/products?consumer_key=${KEY}&consumer_secret=${SECRET}&per_page=1`);
+    return response.ok;
+  } catch (error) {
+    console.error('Erro ao verificar conexão:', error);
+    return false;
+  }
+};
+
 export const fetchProducts = async () => {
   try {
+    console.log('🔄 Iniciando busca de produtos...');
+    
+    // Verificar conexão primeiro
+    const isConnected = await checkConnection();
+    if (!isConnected) {
+      console.error('❌ Sem conexão com a API');
+      return [];
+    }
+
     let page = 1;
     let allProducts = [];
     let hasMore = true;
@@ -13,11 +33,24 @@ export const fetchProducts = async () => {
 
     while (hasMore) {
       const url = `${API_BASE}/products?consumer_key=${KEY}&consumer_secret=${SECRET}&per_page=${perPage}&status=publish&page=${page}`;
+      console.log(`📡 Buscando página ${page}...`);
+      
       const response = await fetch(url);
+      console.log(`📥 Resposta da API - Status: ${response.status}`);
+      
       if (!response.ok) {
-        break;
+        console.error('❌ Erro na resposta da API:', response.status, response.statusText);
+        return []; // Retorna array vazio em caso de erro
       }
+
       const data = await response.json();
+      console.log(`✅ Produtos recebidos na página ${page}:`, data.length);
+      
+      if (!Array.isArray(data)) {
+        console.error('❌ Dados recebidos não são um array:', data);
+        return []; // Retorna array vazio em caso de erro
+      }
+
       if (data.length === 0) {
         hasMore = false;
       } else {
@@ -26,6 +59,8 @@ export const fetchProducts = async () => {
         page++;
       }
     }
+
+    console.log(`🎉 Total de produtos encontrados: ${allProducts.length}`);
 
     const produtos = allProducts.map(produto => ({
       id: produto.id,
@@ -41,9 +76,11 @@ export const fetchProducts = async () => {
       shortName: produto.name?.length > 15 ? produto.name.substring(0, 15) + '...' : produto.name || 'Produto'
     }));
 
+    console.log('✨ Produtos processados com sucesso');
     return produtos;
   } catch (error) {
-    return [];
+    console.error('❌ Erro ao buscar produtos:', error);
+    return []; // Retorna array vazio em caso de erro
   }
 };
 

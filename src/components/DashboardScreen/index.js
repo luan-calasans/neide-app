@@ -124,19 +124,19 @@ export function DashboardScreen() {
     },
     {
       title: `Vendas ${periods.find(p => p.key === selectedPeriod)?.label}`,
-      value: totalSales,
+      value: totalSales.toLocaleString('pt-BR'),
       icon: 'trending-up',
       gradient: ['#f093fb', '#f5576c'],
     },
     {
       title: 'Produtos vendidos',
-      value: itemsSold,
+      value: itemsSold.toLocaleString('pt-BR'),
       icon: 'analytics',
       gradient: ['#4facfe', '#00f2fe'],
     },
     {
       title: 'Pedidos',
-      value: inStock,
+      value: inStock.toLocaleString('pt-BR'),
       icon: 'check-circle',
       gradient: ['#43e97b', '#38f9d7'],
     }
@@ -183,11 +183,10 @@ export function DashboardScreen() {
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.statHeader}>
-          <MaterialIcons name={stat.icon} size={28} color="#fff" />
+          <MaterialIcons name={stat.icon} size={24} color="#fff" />
           <Text style={styles.statValue}>{stat.value}</Text>
         </View>
         <Text style={styles.statTitle}>{stat.title}</Text>
-        <Text style={styles.statSubtitle}>{stat.subtitle}</Text>
       </LinearGradient>
     </Animated.View>
   );
