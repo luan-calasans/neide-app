@@ -5,12 +5,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useProducts } from '../../hooks/useProducts';
 import { ChartSection } from '../ChartSection';
 import { styles } from './style';
+import { fetchSalesReport, fetchTopSellingProducts, fetchTotalSales, fetchOrders, fetchStock } from '../../services/api';
+import { Buffer } from 'buffer';
 
 const { width } = Dimensions.get('window');
 
 export function DashboardScreen() {
   const [selectedPeriod, setSelectedPeriod] = useState('mes');
   const [topCount, setTopCount] = useState(5);
+  const [performance, setPerformance] = useState({ totalSales: 0, totalOrders: 0, averageSales: 0 });
+  const [topProducts, setTopProducts] = useState([]);
+  const [stock, setStock] = useState([]);
+  const [realLoading, setRealLoading] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   
@@ -32,19 +38,69 @@ export function DashboardScreen() {
     }
   }, [loading]);
 
+  // Buscar dados reais da API WooCommerce
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setRealLoading(true);
+      try {
+        // Calcular datas conforme seleção
+        const now = new Date();
+        let firstDay, lastDay;
+        lastDay = now;
+        if (selectedPeriod === 'ano') {
+          firstDay = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        } else if (selectedPeriod === 'semestre') {
+          firstDay = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+        } else {
+          firstDay = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        }
+        function formatDateISO(date, endOfDay = false) {
+          const pad = n => n.toString().padStart(2, '0');
+          return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${endOfDay ? '23:59:59' : '00:00:00'}`;
+        }
+        const after = formatDateISO(firstDay);
+        const before = formatDateISO(lastDay, true);
+        // Buscar dados reais
+        const perf = await fetchTotalSales(after, before);
+        const orders = await fetchOrders(after, before, 1000);
+        const stk = await fetchStock(after, before, 1000);
+        const top = await fetchTopSellingProducts(after, before, 1000);
+        setPerformance({
+          totalSales: perf?.totalSales || 0,
+          totalOrders: Array.isArray(orders) ? orders.length : 0,
+          averageSales: Array.isArray(orders) && orders.length > 0 ? (orders.reduce((acc, o) => acc + (o.total_sales || 0), 0) / orders.length) : 0,
+          ordersCount: perf?.ordersCount || 0,
+          itemsSold: perf?.itemsSold || 0
+        });
+        setTopProducts(top);
+        setStock(stk);
+      } catch (err) {
+        setPerformance({ totalSales: 0, totalOrders: 0, averageSales: 0 });
+        setTopProducts([]);
+        setStock([]);
+      } finally {
+        setRealLoading(false);
+      }
+    };
+    fetchData();
+  }, [selectedPeriod, topCount]);
+
   // Obter dados de vendas baseados no período selecionado  
   const salesData = getSalesData(selectedPeriod);
 
   // Estatísticas gerais
-  const totalProducts = products.length;
-  const totalSales = salesData.reduce((sum, item) => sum + item.sold, 0);
-  const averageSales = salesData.length > 0 ? Math.round(totalSales / salesData.length) : 0;
-  const outOfStock = products.filter(p => p.stock_quantity === 0).length;
-  const lowStock = products.filter(p => p.stock_quantity > 0 && p.stock_quantity <= 5).length;
-  const inStock = products.filter(p => p.stock_quantity > 5).length;
+  const totalProducts = 547;
+  const totalSales = performance.totalSales;
+  const totalOrders = performance.totalOrders;
+  const averageSales = performance.averageSales;
+  const ordersCount = performance.ordersCount || 0;
+  const itemsSold = performance.itemsSold || 0;
+  const outOfStock = stock.filter(p => p.stock_quantity === 0).length;
+  const lowStock = stock.filter(p => p.stock_quantity > 0 && p.stock_quantity <= 5).length;
+  const inStock = ordersCount;
 
   // Produto mais vendido
-  const topProduct = salesData.length > 0 ? salesData[0] : null;
+  const topProduct = topProducts.length > 0 ? topProducts[0] : null;
 
   const periods = [
     { key: 'mes', label: 'Mês', icon: 'today', gradient: ['#e91e63', '#ad1457'] },
@@ -65,28 +121,24 @@ export function DashboardScreen() {
       value: totalProducts,
       icon: 'inventory',
       gradient: ['#667eea', '#764ba2'],
-      subtitle: 'Catálogo completo'
     },
     {
       title: `Vendas ${periods.find(p => p.key === selectedPeriod)?.label}`,
       value: totalSales,
       icon: 'trending-up',
       gradient: ['#f093fb', '#f5576c'],
-      subtitle: 'Total de vendas'
     },
     {
-      title: 'Média de Vendas',
-      value: averageSales,
+      title: 'Produtos vendidos',
+      value: itemsSold,
       icon: 'analytics',
       gradient: ['#4facfe', '#00f2fe'],
-      subtitle: 'Por produto'
     },
     {
-      title: 'Em Estoque',
+      title: 'Pedidos',
       value: inStock,
       icon: 'check-circle',
       gradient: ['#43e97b', '#38f9d7'],
-      subtitle: 'Disponíveis'
     }
   ];
 
@@ -141,7 +193,7 @@ export function DashboardScreen() {
   );
 
   if (error) return renderErrorState();
-  if (loading) return renderLoadingState();
+  if (loading || realLoading) return renderLoadingState();
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -282,54 +334,6 @@ export function DashboardScreen() {
           ))}
         </ScrollView>
       </Animated.View>
-
-      {/* Controles de ranking */}
-      <Animated.View style={[styles.controlsContainer, { opacity: fadeAnim }]}>
-        <Text style={styles.controlsTitle}>🎯 Configurar Ranking</Text>
-        <View style={styles.topButtonsContainer}>
-          {topCounts.map(top => (
-            <TouchableOpacity
-              key={top.value}
-              style={[
-                styles.topButton,
-                topCount === top.value && styles.topButtonActive
-              ]}
-              onPress={() => setTopCount(top.value)}
-            >
-              <Text style={[
-                styles.topButtonText,
-                topCount === top.value && styles.topButtonTextActive
-              ]}>
-                {top.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </Animated.View>
-
-      {/* Gráficos */}
-      <Animated.View style={{ opacity: fadeAnim }}>
-        {salesData.length > 0 ? (
-          <ChartSection 
-            title={`📈 Top ${topCount} Produtos - ${periods.find(p => p.key === selectedPeriod)?.label}`}
-            data={salesData.slice(0, topCount)}
-            topCount={topCount}
-          />
-        ) : (
-          <View style={styles.noDataContainer}>
-            <MaterialIcons name="bar-chart" size={64} color="#ccc" />
-            <Text style={styles.noDataText}>Nenhum dado disponível</Text>
-            <Text style={styles.noDataSubtext}>Configure o período para ver os gráficos</Text>
-          </View>
-        )}
-      </Animated.View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          📱 Dados atualizados em tempo real • {products.length} produtos no catálogo
-        </Text>
-      </View>
     </ScrollView>
   );
 } 

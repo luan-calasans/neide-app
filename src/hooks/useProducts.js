@@ -3,7 +3,7 @@ import { fetchProducts, fetchCategories, generateSalesData } from '../services/a
 
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState(['Todos']);
+  const [categories, setCategories] = useState([{ name: 'Todos', count: 0 }]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,7 +23,13 @@ export const useProducts = () => {
       console.log('📦 Hook recebeu:', produtos.length, 'produtos');
       
       // Buscar categorias
-      const cats = await fetchCategories();
+      let cats = await fetchCategories();
+      // Atualizar o count da categoria 'Todos' para o total de produtos
+      if (cats.length > 0) {
+        cats = cats.map(cat =>
+          cat.name === 'Todos' ? { ...cat, count: produtos.length } : cat
+        );
+      }
       setCategories(cats);
       console.log('📂 Hook recebeu:', cats.length, 'categorias');
       
@@ -35,7 +41,7 @@ export const useProducts = () => {
       console.error('❌ Erro no hook:', err);
       setError('Erro ao carregar loja');
       setProducts([]);
-      setCategories(['Todos']);
+      setCategories([{ name: 'Todos', count: 0 }]);
     }
     
     setLoading(false);
@@ -46,13 +52,13 @@ export const useProducts = () => {
     return generateSalesData(products, period);
   };
 
-  const getProductsByCategory = (category) => {
-    if (category === 'Todos') return products;
-    return products.filter(p => p.category === category);
+  const getProductsByCategory = (categoryId) => {
+    if (!categoryId) return products; // 'Todos' ou null
+    return products.filter(p => p.categoryId === categoryId);
   };
 
-  const searchProducts = (searchText, category = 'Todos') => {
-    let filtered = getProductsByCategory(category);
+  const searchProducts = (searchText, categoryId = null) => {
+    let filtered = getProductsByCategory(categoryId);
     
     if (searchText.trim()) {
       filtered = filtered.filter(p =>

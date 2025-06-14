@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Animated } from 'react-native';
-import { Search, X, AlertCircle, CheckCircle } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useProducts } from '../../hooks/useProducts';
 import { ProductCard } from '../ProductCard';
 import { styles } from './style';
 
 export function ProductsScreen() {
   const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   
   const { 
@@ -30,7 +30,9 @@ export function ProductsScreen() {
   }, [products, categories, loading, error]);
 
   // Filtrar produtos baseado na busca e categoria
-  const filteredProducts = searchProducts(searchText, selectedCategory);
+  let filteredProducts = searchProducts(searchText, selectedCategory);
+  // Se número ímpar de produtos, adiciona um item vazio para alinhar os cards
+  const displayProducts = filteredProducts.length % 2 === 1 ? [...filteredProducts, { id: 'empty', empty: true }] : filteredProducts;
 
   const getCategoryColor = (category, isSelected) => {
     const colorMap = {
@@ -52,14 +54,18 @@ export function ProductsScreen() {
   };
 
   const renderProduct = ({ item, index }) => (
-    <Animated.View style={styles.productItem}>
-      <ProductCard product={item} />
-    </Animated.View>
+    item.empty ? (
+      <Animated.View style={[styles.productItem, { backgroundColor: 'transparent', elevation: 0, shadowOpacity: 0 }]} />
+    ) : (
+      <Animated.View style={styles.productItem}>
+        <ProductCard product={item} />
+      </Animated.View>
+    )
   );
 
   const renderCategory = ({ item: category, index }) => {
-    const isSelected = selectedCategory === category;
-    const backgroundColor = getCategoryColor(category, isSelected);
+    const isSelected = selectedCategory === category.id;
+    const backgroundColor = getCategoryColor(category.name, isSelected);
     
     return (
       <TouchableOpacity
@@ -72,7 +78,7 @@ export function ProductsScreen() {
             transform: [{ scale: isSelected ? 1.05 : 1 }]
           }
         ]}
-        onPress={() => setSelectedCategory(category)}
+        onPress={() => setSelectedCategory(category.id)}
         disabled={loading}
         activeOpacity={0.8}
       >
@@ -83,11 +89,11 @@ export function ProductsScreen() {
             fontFamily: isSelected ? 'Montserrat_600SemiBold' : 'Montserrat_500Medium'
           }
         ]}>
-          {category}
+          {category.name}
         </Text>
         {isSelected && (
           <View style={styles.selectedIndicator}>
-            <CheckCircle size={16} color="#fff" />
+            <MaterialIcons name="check-circle" size={16} color="#fff" />
           </View>
         )}
       </TouchableOpacity>
@@ -107,7 +113,7 @@ export function ProductsScreen() {
     if (error) {
       return (
         <View style={styles.centerContainer}>
-          <AlertCircle size={48} color="#d81b60" />
+          <MaterialIcons name="error" size={48} color="#d81b60" />
           <Text style={styles.errorText}>Erro ao carregar produtos</Text>
           <Text style={styles.errorSubtext}>{error}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={refetch}>
@@ -120,7 +126,7 @@ export function ProductsScreen() {
     if (filteredProducts.length === 0 && searchText) {
       return (
         <View style={styles.centerContainer}>
-          <AlertCircle size={48} color="#999" />
+          <MaterialIcons name="error" size={48} color="#999" />
           <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
           <Text style={styles.emptySubtext}>Tente uma busca diferente</Text>
         </View>
@@ -145,8 +151,7 @@ export function ProductsScreen() {
           <View style={styles.headerTextContainer}>
             <Text style={styles.header}>Produtos</Text>
             <Text style={styles.headerSubtitle}>
-              {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''} 
-              {selectedCategory !== 'Todos' && ` em ${selectedCategory}`}
+              {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''}
             </Text>
           </View>
           {loading && <ActivityIndicator size="small" color="#d81b60" style={styles.headerLoader} />}
@@ -156,7 +161,7 @@ export function ProductsScreen() {
       {/* Barra de busca moderna */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
-          <Search size={20} color="#999" style={styles.searchIcon} />
+          <MaterialIcons name="search" size={20} color="#999" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar produtos..."
@@ -170,7 +175,7 @@ export function ProductsScreen() {
               onPress={() => setSearchText('')}
               style={styles.clearButton}
             >
-              <X size={20} color="#999" />
+              <MaterialIcons name="close" size={20} color="#999" />
             </TouchableOpacity>
           )}
         </View>
@@ -182,7 +187,7 @@ export function ProductsScreen() {
         <FlatList
           horizontal
           data={categories}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.name}
           showsHorizontalScrollIndicator={false}
           renderItem={renderCategory}
           contentContainerStyle={styles.categoriesContainer}
@@ -196,7 +201,7 @@ export function ProductsScreen() {
       {/* Lista de produtos ou estado vazio */}
       {filteredProducts.length > 0 ? (
         <Animated.FlatList
-          data={filteredProducts}
+          data={displayProducts}
           renderItem={renderProduct}
           keyExtractor={item => item.id.toString()}
           numColumns={2}

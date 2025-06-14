@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   headerGradient: {
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 10,
     paddingBottom: 25,
   },
   headerContent: {

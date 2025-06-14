@@ -59,11 +59,6 @@ export function ProductCard({ product }) {
           
           {/* Badge da categoria */}
           <View style={styles.categoryBadge}>
-            <MaterialIcons 
-              name={getCategoryIcon(product.category)} 
-              size={12} 
-              color="#fff" 
-            />
             <Text style={styles.categoryText}>{product.category}</Text>
           </View>
         </View>
@@ -79,12 +74,6 @@ export function ProductCard({ product }) {
             <Text style={styles.price}>
               {formatPrice(product.price)}
             </Text>
-            {product.price > 50 && (
-              <View style={styles.premiumBadge}>
-                <MaterialIcons name="star" size={12} color="#ffd700" />
-                <Text style={styles.premiumText}>Premium</Text>
-              </View>
-            )}
           </View>
 
           {/* Informações de estoque */}

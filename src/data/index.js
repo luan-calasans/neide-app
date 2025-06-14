@@ -1,6 +1,4 @@
-import { Product, SalesData, AuthCredentials } from '../types';
-
-export const PRODUCTS: Product[] = [
+export const PRODUCTS = [
   { id: 1, name: 'Shampoo Neide', category: 'Cabelos', price: 25.90 },
   { id: 2, name: 'Condicionador Neide', category: 'Cabelos', price: 22.50 },
   { id: 3, name: 'Creme Facial Neide', category: 'Rosto', price: 45.00 },
@@ -9,7 +7,7 @@ export const PRODUCTS: Product[] = [
   { id: 6, name: 'Hidratante Corporal Neide', category: 'Corpo', price: 28.90 },
 ];
 
-export const VENDAS_MES: SalesData[] = [
+export const VENDAS_MES = [
   { id: 1, name: 'Shampoo Neide', sold: 120, shortName: 'Shampoo' },
   { id: 2, name: 'Condicionador Neide', sold: 110, shortName: 'Condicionador' },
   { id: 3, name: 'Creme Facial Neide', sold: 95, shortName: 'Creme Facial' },
@@ -22,7 +20,7 @@ export const VENDAS_MES: SalesData[] = [
   { id: 10, name: 'Loção Tônica', sold: 45, shortName: 'Loção' },
 ];
 
-export const VENDAS_SEMESTRE: SalesData[] = [
+export const VENDAS_SEMESTRE = [
   { id: 3, name: 'Creme Facial Neide', sold: 580, shortName: 'Creme Facial' },
   { id: 1, name: 'Shampoo Neide', sold: 520, shortName: 'Shampoo' },
   { id: 4, name: 'Óleo Corporal Neide', sold: 450, shortName: 'Óleo Corporal' },
@@ -35,7 +33,7 @@ export const VENDAS_SEMESTRE: SalesData[] = [
   { id: 10, name: 'Loção Tônica', sold: 220, shortName: 'Loção' },
 ];
 
-export const VENDAS_ANO: SalesData[] = [
+export const VENDAS_ANO = [
   { id: 1, name: 'Shampoo Neide', sold: 1200, shortName: 'Shampoo' },
   { id: 3, name: 'Creme Facial Neide', sold: 1150, shortName: 'Creme Facial' },
   { id: 2, name: 'Condicionador Neide', sold: 980, shortName: 'Condicionador' },
@@ -48,7 +46,7 @@ export const VENDAS_ANO: SalesData[] = [
   { id: 10, name: 'Loção Tônica', sold: 520, shortName: 'Loção' },
 ];
 
-export const AUTH_CREDENTIALS: AuthCredentials = {
+export const AUTH_CREDENTIALS = {
   username: 'neidecosmeticos',
   password: 'NeideCosmeticos@25'
 }; 
